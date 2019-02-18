@@ -2,7 +2,9 @@ import scipy
 import sys
 import numpy as np
 from skimage import io,util,color
+from fractions import Fraction
 
+#Pads image with zero padding
 def zero_pad(img,flt,pdng_rws,pdng_clms):
     height = img.shape[0]
     width = img.shape[1]
@@ -10,14 +12,17 @@ def zero_pad(img,flt,pdng_rws,pdng_clms):
     clms = width+(2*pdng_rws)
     padded_img = np.zeros((rws,clms))
 
+    #BUG REPORT(Out of index if rws and clms input are not equal)
     for i in range(pdng_clms,pdng_clms+width):
         for j in range(pdng_rws,pdng_rws+height):
             padded_img[i,j] = img[i-pdng_clms,j-pdng_rws]
     return padded_img
 
+#Pads img with reflection padding
 def rflct_pad(img,flt,pdng_rws,pdng_clms):
     pass
 
+#Returns image convolved with filter in argument
 def convolve(img, flt, pdng_func,pdng_rws,pdng_clms):
     padded_img = pdng_func
 
@@ -36,14 +41,18 @@ rws = int(input('Number of rows in filter:'))
 clms = int(input('Number of clms in filter'))
 flt = np.zeros((rws,clms))
 
-"""
+#User select filter values
 for i in range(0,rws):
     for j in range(0,clms):
-        flt[i,j] = int(input('Type(Row:{}, column:{}) value: '.format(i,j)))
-"""
+        flt[i,j] = float(input('Type(Row:{}, column:{}) value: '.format(i,j)))
+matx_scl = float(Fraction(input('Select a scalar to multiple filte with for example(1/9) for Gaussian Blur: ')))
+flt = np.asmatrix(flt)*matx_scl
+
+#Calculating number of colums and rows to pad
 pdng_rws = int((rws-1)/2)
 pdng_clms = int((clms-1)/2)
-       
+
+#User selects what padding method he will use
 while(True):
     pdng_optn = int(input('1.Zero-padding\n2.Reflecting-padding\n: '))
     
@@ -57,3 +66,7 @@ while(True):
         print('{} not an option..'.format(pdng_optn))
 
 convolve(img,flt,pdng_func,pdng_rws,pdng_clms)
+
+"""
+By Sivert M. Skarning
+"""
