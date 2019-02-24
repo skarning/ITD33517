@@ -2,7 +2,6 @@ import scipy
 import sys
 import numpy as np
 from skimage import io, util, color
-from fractions import Fraction
 
 
 # Pads image with zero padding
@@ -20,9 +19,13 @@ def zero_pad(img, flt, pdng_rws, pdng_clms):
     return padded_img
 
 
-# Pads img with reflection padding
-def rflct_pad(img, flt, pdng_rws, pdng_clms):
-    pass
+# User selects what padding method he will use
+def opt(pdng_optn):
+    return{
+        1: zero_pad(img, flt, pdng_rws, pdng_clms),
+        2: np.pad(img, (pdng_rws, pdng_clms), 'reflect')
+        }.get(pdng_optn, zero_pad(img, flt,
+                                  pdng_rws, pdng_clms))
 
 
 # Convolving through image with provided filter
@@ -51,8 +54,14 @@ if len(sys.argv) < 2:
     sys.exit()
 
 img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[1])))
-rws = int(input('Number of rows in filter:'))
-clms = int(input('Number of clms in filter'))
+while True:
+    rws = int(input('Number of rows in filter:'))
+    clms = int(input('Number of clms in filter'))
+    if rws % 2 == 0 or clms % 2 == 0:
+        print('Filter size have to be odd')
+        continue
+    break
+
 flt = np.zeros((rws, clms))
 
 # User select filter values
@@ -60,27 +69,16 @@ for i in range(0, rws):
     for j in range(0, clms):
         flt[i, j] = float(input('Type(Row:{},'
                                 ' column:{}) value: '.format(i, j)))
-matx_scl = float(Fraction(input('Select a scalar to multiple filter'
-                                'with for example(1/9) for Gaussian Blur: ')))
-flt = np.asmatrix(flt)*matx_scl
+flt = np.asmatrix(flt)
+flt = np.rot90(flt, 2)
 
 # Calculating number of colums and rows to pad
 pdng_rws = int((rws-1)/2)
 pdng_clms = int((clms-1)/2)
 
-# User selects what padding method he will use
-while(True):
-    pdng_optn = int(input('1.Zero-padding\n2.Reflecting-padding\n: '))
-    if pdng_optn == 1:
-        pdng_func = zero_pad(img, flt, pdng_rws, pdng_clms)
-        break
-    elif pdng_optn == 2:
-        pdng_func = rflct_pad(img, flt, pdng_rws, pdng_clms)
-        break
-    else:
-        print('{} not an option..'.format(pdng_optn))
+pdng_optn = int(input('1.Zero-padding\n2.Reflecting-padding\n: '))
+convolve(img, flt, opt(pdng_optn), pdng_rws, pdng_clms)
 
-convolve(img, flt, pdng_func, pdng_rws, pdng_clms)
 
 """
 By Sivert M. Skarning
