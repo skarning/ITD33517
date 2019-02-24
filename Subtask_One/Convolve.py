@@ -32,14 +32,15 @@ def convolve(img, flt, pdng_func, pdng_rws, pdng_clms):
     nmb_of_pxl_in_flt = flt.shape[0]*flt.shape[1]
     for i in range(pdng_rws, padded_img.shape[0]-pdng_rws):
         for j in range(pdng_clms, padded_img.shape[1]-pdng_clms):
-            flt_i = 0
-            flt_j = 0
+            flt_i = -1
+            flt_j = -1
             pxl_vlu = 0
-            for k in range(i, flt.shape[0]):
+            for k in range(i-pdng_rws, i-pdng_rws+flt.shape[0]):
                 flt_i = flt_i+1
-                for l in range(j-pdng_clms, flt.shape[1]):
+                for l in range(j-pdng_clms, j-pdng_clms+flt.shape[1]):
                     flt_j = flt_j+1
-                    pxl_vlu = flt[flt_i, flt_j] * padded_img[k, l] + pxl_vlu
+                    pxl_vlu = (flt[flt_i, flt_j] * padded_img[k, l]) + pxl_vlu
+                flt_j = -1
             padded_img[i, j] = pxl_vlu/nmb_of_pxl_in_flt
     io.imsave('lena_out.png', padded_img)
 
@@ -49,7 +50,7 @@ if len(sys.argv) < 2:
     print('No image as argument')
     sys.exit()
 
-img = util.img_as_float64(color.rgb2gray(io.imread(sys.argv[1])))
+img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[1])))
 rws = int(input('Number of rows in filter:'))
 clms = int(input('Number of clms in filter'))
 flt = np.zeros((rws, clms))
