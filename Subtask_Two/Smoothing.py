@@ -35,15 +35,25 @@ def gaussian_blure():
     return flt
 
 
-# Applies median_smoothing to image
-def median_blure():
-    print('Median')
+# Applies average_smoothing to image
+def mean_blur():
+    flt = np.ones((5, 5))
+    for i in range(5):
+        for j in range(5):
+            flt[i, j] = flt[i, j]/25
+    return flt
+
+
+# Returns laplacian sharpening filter
+def lpl_shrp():
+    return np.asarray(([-1, -1, -1], [-1, 8, -1], [-1, -1, -1]))
 
 
 def smth_opt(opt):
     return{
         1: gaussian_blure,
-        2: median_blure
+        2: mean_blur,
+        3: lpl_shrp
     }.get(opt, gaussian_blure)
 
 
@@ -52,15 +62,17 @@ if len(sys.argv) < 3:
     print('No enough arguments')
     sys.exit()
 
-opt = int(input('1.Gaussian\n2.Median\n:'))
+opt = int(input('1.Gaussian\n2.Mean\n3.Laplacian\n:'))
 smth_func = smth_opt(opt)
 img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[1])))
 flt = smth_func()
 
 img = ndimage.convolve(img, flt, mode='nearest')
-io.imsave(sys.argv[2], img)
+print(flt)
+print(img)
+io.imsave(sys.argv[2], np.clip(img, 0, 1))
 
 
 """
-By Sivet M. Skarning
+By Sivert M. Skarning
 """
