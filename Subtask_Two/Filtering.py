@@ -53,7 +53,8 @@ def smth_opt(opt):
     return{
         1: gaussian_blure,
         2: mean_blur,
-        3: lpl_shrp
+        3: lpl_shrp,
+        4: gaussian_blure
     }.get(opt, gaussian_blure)
 
 
@@ -62,14 +63,20 @@ if len(sys.argv) < 3:
     print('No enough arguments')
     sys.exit()
 
-opt = int(input('1.Gaussian\n2.Mean\n3.Laplacian\n:'))
+opt = int(input('1.Gaussian\n2.Mean\n3.Laplacian\n4.Highboost filtering\n:'))
 smth_func = smth_opt(opt)
 img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[1])))
+org_img = img
 flt = smth_func()
 
 img = ndimage.convolve(img, flt, mode='nearest')
-print(flt)
-print(img)
+
+if opt == 4:
+    hghbst_cnst = float(input('Constant for Highboost: '))
+    hghbst_msk = org_img - img
+    hghbst_img = org_img + (hghbst_cnst*hghbst_msk)
+    img = hghbst_img
+
 io.imsave(sys.argv[2], np.clip(img, 0, 1))
 
 
