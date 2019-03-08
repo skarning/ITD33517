@@ -63,6 +63,25 @@ def wrt_hstg_to_file(file_path, img):
     fl.close
 
 
+# Matching the histograms CDF
+def match_cdf(spec_hstg, org_hstg):
+    array = [0]*len(org_hstg)
+    for i in range(0, len(org_hstg)):
+        for j in range(0, len(spec_hstg)):
+            if (spec_hstg[j]-org_hstg[i]) >= 0:
+                array[i] = j
+                break
+    return array
+
+
+# Go thorough img and implement new histogram
+def apply_hstg_to_img(img, hstg_mapping):
+    for i in range(0, img.shape[0]):
+        for j in range(0, img.shape[1]):
+            img[i, j] = hstg_mapping[img[i, j]]
+    return img
+
+
 # Getting Cumulative function for image
 img = util.img_as_ubyte(color.rgb2gray(io.imread('barbara.png')))
 nmb_of_pxls = img.shape[0]*img.shape[1]
@@ -75,5 +94,7 @@ spc_hstg = get_hstg_from_file('file_histogram.txt')
 spc_hstg_prob = cnv_to_prob(spc_hstg, get_nmb_of_pxls_in_hstg_file(spc_hstg))
 spc_hstg_cmlprob = get_cmltv_prob(spc_hstg_prob)
 
-print(spc_hstg_cmlprob)
-print(img_hstg_cmlprob)
+hstg_mapping = match_cdf(spc_hstg_cmlprob, img_hstg_cmlprob)
+spec_img = apply_hstg_to_img(img, hstg_mapping)
+
+io.imsave('hist_spec_image.png', spec_img)
