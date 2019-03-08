@@ -12,7 +12,16 @@ def get_hstg_from_file(fl_path):
     array = []
     for x in fl:
         array.append(int(x))
+    array = np.asarray(array)
     return array
+
+
+# Returns number of pixels in histogram file
+def get_nmb_of_pxls_in_hstg_file(array):
+    sum = 0
+    for x in array:
+        sum = sum+x
+    return sum
 
 
 # Converts every value in array to probability
@@ -33,8 +42,25 @@ def get_hstg_from_img(img):
     return hstg
 
 
-# Testing hstg func
+# Returns array with cumulative probability
+def get_cmltv_prob(array):
+    buff = 0
+    for i in range(0, len(array)):
+        array[i] = array[i]+buff
+        buff = array[i]
+    return array
+        
+
+# Getting Cumulative function for image
 img = util.img_as_ubyte(color.rgb2gray(io.imread('barbara.png')))
 nmb_of_pxls = img.shape[0]*img.shape[1]
 img_hstg = get_hstg_from_img(img)
 img_hstg_prob = cnv_to_prob(img_hstg, nmb_of_pxls)
+img_hstg_cmlprob = get_cmltv_prob(img_hstg_prob)
+
+# Getting Cumulateive function for histogram file
+spc_hstg = get_hstg_from_file('file_histogram.txt')
+spc_hstg_prob = cnv_to_prob(spc_hstg, get_nmb_of_pxls_in_hstg_file(spc_hstg))
+spc_hstg_cmlprob = get_cmltv_prob(spc_hstg_prob)
+
+print(img_hstg_cmlprob)
