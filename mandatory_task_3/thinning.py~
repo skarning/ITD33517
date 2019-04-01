@@ -1,0 +1,20 @@
+import numpy as np
+from skimage import io, util
+
+img = []
+lst_buff = []
+
+with open('txt_img_morph.txt') as fl:
+    for ln in fl:
+        for char in ln:
+            if(char == '\n'):
+                img.append(lst_buff)
+                lst_buff = []
+            elif(char == '1'):
+                lst_buff.append(True)
+            else:
+                lst_buff.append(False)
+
+img = np.asarray(img)
+print(img)
+io.imsave('binary_image.pbm', util.img_as_ubyte(img))
