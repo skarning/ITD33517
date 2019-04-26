@@ -1,7 +1,6 @@
-import skimage
 import numpy as np
 from skimage import io, util, color
-from scipy import ndimage
+from scipy import ndimage as nd
 import sys
 
 img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[1])))
@@ -13,7 +12,8 @@ filtersize will always be odd
 flt_size = int(4*sd)-1
 
 
-""" Function dist from https://github.com/lavima/itd33517_examples/
+""" Function dist, gaussian_smooth from https://github.com/lavima/
+itd33517_examples/
 blob/master/lecture13_edge_detection.py
 """
 
@@ -34,5 +34,15 @@ def gaussian_smooth():
 
 
 flt = gaussian_smooth()
-gaussian_image = ndimage.convolve(img, flt, mode="nearest")
+gaussian_image = nd.convolve(img, flt, mode="nearest")
 io.imsave("lena_gaussian.png", util.img_as_uint(gaussian_image))
+
+# Prewitt operators
+prk_x = np.asarray([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
+prk_y = np.asarray([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+
+grad_x = nd.convolve(gaussian_image, prk_x, mode='nearest')
+grad_y = nd.convolve(gaussian_image, prk_y, mode='nearest')
+
+io.imsave("grad_x.png", util.img_as_uint(grad_x))
+io.imsave("grad_y.png", util.img_as_uint(grad_y))
