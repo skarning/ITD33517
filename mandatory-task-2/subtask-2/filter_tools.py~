@@ -1,0 +1,13 @@
+import numpy as np
+from skimage import io, util, color
+import sys
+
+
+# Import an image from path as ubyte
+def import_img(img_path):
+    return util.img_as_ubyte(color.rgb2gray(io.imread(img_path)))
+
+
+# Saves the image
+def save_img(img, fname='my_saved_img.png'):
+    io.imsave(fname, np.clip(img, 0, 255))
