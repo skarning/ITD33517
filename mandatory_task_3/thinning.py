@@ -46,6 +46,11 @@ def thinning_iteration(img, struct_elem, n):
     for i in range(1, img.shape[0] - 1):
         for j in range(1, img.shape[1] - 1):
             result_img[i, j] = apply_strct_elem(j, i, img, struct_elem)
+    print(f'Iterasjon: {n}')
+    print('SE: ')
+    print(struct_elem)
+    print('Bilde')
+    print(result_img)
     return result_img
 
 
@@ -107,8 +112,11 @@ def convert_to_ubyte(img_in):
 
 
 img = read_binary_image_from_file()
+img_save_buffer = read_binary_image_from_file()
+img_save_buffer = convert_to_ubyte(img_save_buffer)
+io.imsave('read_binary_file.png', util.img_as_ubyte(img_save_buffer))
 img = np.pad(img, 1, mode='constant')
 img = thinn(img)
 print(img)
 img = convert_to_ubyte(img)
-io.imsave('binary_image_thinned.pbm', util.img_as_ubyte(img))
+io.imsave('binary_image_thinned.png', util.img_as_ubyte(img))
