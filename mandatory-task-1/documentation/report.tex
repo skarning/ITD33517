@@ -1,0 +1,43 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{00B2}{\ensuremath{{}^2}}
+\usepackage{listings}
+\usepackage{graphicx}
+\title{Obligatorisk innlevering 1}
+\author{Sivert M. Skarning}
+\date{Mai 2019}
+\begin{document}
+\maketitle
+\section{Oppgave 1}
+\paragraph{Oppgavebeskrivelse}
+Implementer konvolusjon på egen hånd. Implementasjonen skal være generell slik at den kan anvendes på alle bilder og filtere. Det er greit å begrense implementasjonen til å fungere på gråskalabilder, men det er ikke påkrevd. Implementasjonen skal støtte minst to ulike former for utvidelse/padding. Rapporten skal inneholde dokumentasjon for at implementasjonen fungerer.
+\subsection{Dokumentasjon}
+Vedlagt ligger et script kalt convolution.py. Koden utfører konvolusjon på bilde man legger ved som argument. Scriptet gir brukeren mulighet til å velge filterstørrelse of hvilke verdier filteret har. Brukeren har også mulighet til å velge mellom to forskjellige paddingmuligheter, zeropadding og reflectionpadding. Zeropadding er implementert med egenprogramert funksjon navngitt zero-pad.
+Reflectionpad blir implmentert med pakken numpy og er navngitt np.pad. Begge funksjonene fungerer hvor zero-pad gir svart ramme rundt generert bild og reflectionpad gir utvidelse av bilde. Uten padding ville bruk av flere filtere etterhvert krympe bilde betydlig.
+Selve implmentasjonen er inneffektivt implementert og i praksis ville man brukt en annen algoritme for å gjøre en konvolusjon. O-notasjonen for min implementsjon vil være: $$O(n² * m²)$$
+
+\lstinputlisting[caption=Convolve function, language=Python, breaklines=true]{convolve.py}
+
+\subsection{Resultat}
+For å teste konvolveringsalgoritmen har jeg valgt å påføre tre typer filtere på lena.png.
+\begin{itemize}
+   \item Laplacian sharpening
+   \item Mean blure
+   \item Gaussian blure
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/gaussian-filter}
+  \caption{Gaussian filter}
+  \label{fig:gaussian-filter}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/gaussian-blurred-lena}
+  \caption{Lena konvolvert med filteret på Figur \ref{fig:gaussian-filter}}
+  \label{fig:gaussian-blurred-lena}
+\end{figure}
+
+\end{document}
