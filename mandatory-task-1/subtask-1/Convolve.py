@@ -45,7 +45,7 @@ def convolve(img, flt, pdng_func, pdng_rws, pdng_clms):
                     pxl_vlu = (flt[flt_i, flt_j] * padded_img[k, l]) + pxl_vlu
                 flt_j = -1
             padded_img[i, j] = pxl_vlu/nmb_of_pxl_in_flt
-    io.imsave('lena_out.png', exposure.rescale_intensity(padded_img))
+    io.imsave('lena_out.png', padded_img)
 
 
 # Script starts here
