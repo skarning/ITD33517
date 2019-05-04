@@ -20,6 +20,14 @@ Selve implmentasjonen er inneffektivt implementert og i praksis ville man brukt 
 
 \subsection{Resultat}
 For å teste konvolveringsalgoritmen har jeg valgt å påføre tre typer filtere på lena.png.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/lena}
+  \caption{Bilde av Lena, et vanlig eksempel i bildebehandling}
+  \label{fig:lena}
+\end{figure}
+
 \begin{itemize}
    \item Laplacian sharpening
    \item Mean blure
@@ -40,4 +48,39 @@ For å teste konvolveringsalgoritmen har jeg valgt å påføre tre typer filtere
   \label{fig:gaussian-blurred-lena}
 \end{figure}
 
+\paragraph{Gaussain blure} Konvolverings algoritmen fungerte bra. Her med egenimplementert zeropadding. Hadde først problemer med dårlig kontrast på bildet. Reskalerte intensiteten før bilde ble lagret, og fikk dermed et godt resultat som sett i figur \ref{fig:gaussian-blurred-lena}.
+
+\paragraph{Mean blure}
+Forskjellen mellom gaussian blure og mena blure for dette eksempelet er minimal. Ved større filtere ville man kunne se større forskjell. Man trenger vanligvis å kjøre gjennom et mean filter 4 ganger for å få den samme effekten som ved et gaussisk filter. Implementasjonen av konvolverings programmet er uheldig, da man heller skulle lagd det som et set med funksjoner man kunne kalle i steder for å lage det som et skript med bilde som argument. På denne måten kunne man ha testet større filtere lettere.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/mean-filter}
+  \caption{Mean filter}
+  \label{fig:mean-blure}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/mean-blure-lena}
+  \caption{Lena konvolvert med filteret på Figur \ref{fig:mean-blure}}
+  \label{fig:mean-blurred-lena}
+\end{figure}
+
+\paragraph{Laplacian sharpening}
+Laplacian filteret fremhever raske endringer i et bilde. På denne måten blir bilde skarpere, fordi vi kan se kantene på bilde bedere. Man vil se dette på figur \ref{fig:lena-laplacian} i forhold til figur \ref{fig:lena}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/laplacian-filter}
+  \caption{Laplacian filter}
+  \label{fig:laplacian-filter}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/laplacian-lena}
+  \caption{Lena konvolvert med filteret på Figur \ref{fig:laplacian-filter}}
+  \label{fig:lena-laplacian}
+\end{figure}
 \end{document}
