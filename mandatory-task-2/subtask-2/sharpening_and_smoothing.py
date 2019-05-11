@@ -3,47 +3,50 @@ import sys
 from skimage import util, io, color, exposure
 from scipy import fftpack
 
-"""
-Most of this code is taken from lavima on github, ITD53317 examples
-"""
+img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[2])))
+M, N = (img.shape)
+P = 2*M
+Q = 2*N
 
 
-# Function for finding the distance to center by lavima
-def dist(i, j):
-    center_i, center_j = (height*2//2, width*2//2)
-    return ((i-center_i)**2 + (j-center_j)**2)**0.5
+def dist(u, v):
+    u_point = (u - (P/2))**2
+    v_point = (v - (Q/2))**2
+    return np.sqrt(u_point + v_point)
 
 
-img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[1])))
-height, width = img.shape
-padded_img = np.pad(img, (height*2, width*2), 'constant')
-img_trans = np.zeros(padded_img.shape)
+def ideal_lowpass():
+    flt = np.zeros((P, Q))
+    for u in range(0, P):
+        for v in range(0, Q):
+            if dist(u, v) <= 90:
+                flt[u, v] = 0.0
+            else:
+                flt[u, v] = 1.0
+    return flt
 
-for i in range(padded_img.shape[0]):
-    for j in range(padded_img.shape[1]):
-        img_trans[i, j] = padded_img[i, j]*((-1)**(i+j))
 
-fft = fftpack.fft2(img_trans)
+""" Following step to center align image is taken from https://github.com/lavima/itd33517_examples/blob/master/lecture09_fourier_filtering.py"""
+padded_img = np.zeros((P, Q))
+padded_img[0:M, 0:N] = img
+translated = np.zeros(padded_img.shape)
+for i in range(P):
+  for j in range(Q):
+      translated[i,j] = padded_img[i,j]*((-1)**(i+j))
 
-flt = np.zeros(img_trans.shape)
-for i in range(flt.shape[1]):
-    for j in range(flt.shape[0]):
-        if(dist(i, j) <= 50):
-            flt[i, j] = 0.0
-        else:
-            flt[i, j] = 1.0
 
-# In the frequency domain multiplication is the same as
-# convolution in spatial domain
+# FFT transform image
+fft_img = fftpack.fft2(translated)
+ideal_lowpass_img = fft_img * ideal_lowpass()
+ifft_img = fftpack.ifft2(ideal_lowpass_img)
 
-flt_img = flt * fft
-flt_img = fftpack.ifft2(flt_img)
 
-flt_img_translated = np.zeros(padded_img.shape)
+""" Following step to center align image is taken from https://github.com/lavima/itd33517_examples/blob/master/lecture09_fourier_filtering.py"""
+re_translated = np.zeros(padded_img.shape)
+for i in range(P):
+  for j in range(Q):
+    re_translated[i,j] = ifft_img[i,j]*((-1)**(i+j))
 
-for i in range(2*height):
-    for j in range(2*width):
-        flt_img_translated[i, j] = flt_img[i, j]*((-1)**(i+j))
-
-depadded_filtered_img = flt_img_translated[0:height, 0:width]
-io.imsave('out.png', np.clip(flt_img_translated, 0, 1))
+out = re_translated[0:img.shape[1], 0:img.shape[0]]
+    
+io.imsave(sys.argv[1], out)
