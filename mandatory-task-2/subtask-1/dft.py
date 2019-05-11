@@ -87,7 +87,7 @@ ifft = np.around(ifft, 5)
 ifft = np.absolute(ifft)
 print(ifft)
 
-io.imsave('fft_transformed.png', exposure.rescale_intensity(fft_round))
+io.imsave('fftx_transformed.png', exposure.rescale_intensity(fft_round))
 io.imsave('dft_transformed.png', exposure.rescale_intensity(dft_img_rounded))
 io.imsave('ifft_transformed.png', exposure.rescale_intensity(ifft))
 io.imsave('idft_transformed.png', exposure.rescale_intensity(idft_img))
