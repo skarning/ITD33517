@@ -41,8 +41,15 @@ Til venstre i  figur \ref{fig:bgl} ser du barbara filterert med gaussian blure m
 
 I figur \ref{fig:lhl} ser du lena filterert med et høypass filter med cut-off frekvens på 30, til venstre ser du barbara filteret med et laplacian filter.
 
- Ved å se på figur \ref{fig:bgl} kan vi se at et gaussisk filter gir mindre støy på bilde og en jevnere blure. Det gussiks filtere er dermed ikke like bra til å bevare kantene på bilde. I figur \ref{fig:ihl} ser vi at høypass filteret er kraftigere enn laplacian filteret. Dette kan endres ved å sette cut off frekvensen til en laver verdi.
+Ved å se på figur \ref{fig:bgl} kan vi se at et gaussisk filter gir mindre støy på bilde og en jevnere blure. Det gussiks filtere er dermed ikke like bra til å bevare kantene på bilde. I figur \ref{fig:lhl} ser vi at høypass filteret er kraftigere enn laplacian filteret. Dette kan endres ved å sette cut off frekvensen til en laver verdi.
 
+\section{Oppgave 3}
+\subsection{Oppgavebeskrivelse}
+Prøv å fjerne horisontale støylinjer i det følgende bildet ved hjelp av filtrering i frekvensdomenet. Det er lov å bruke innebygde operatorer, men filterne skal lages manuelt.
+\subsection{Dokumentsjon}
+Lavpass filtere har vært mye brukt i forlagsbransjen og ved behandling av satelitt og område bilder. Dette er fordi de utjevner bilde og fjerner støy. I denne oppgave valgte jeg å bruke et gussisk filter i frekvensdomenet for å fjerne de horosontale støylinjene. Bakgrunnen for dette valget var et gaussisk filter ikke beholder kanter spesielt bra. Derfor tenkte jeg at linjene ville bli utjevnet best med et slikt filter.
+\subsection{Resultat}
+Jeg prøvde flere forskjellige verdier for standardavvik, men det virket som om 30 ga det beste resultatet. På figur \ref{fig:cassini} ser du at de horisontale linjene har blitt utjevnet. Man kan fortsatt se konturene av linjene, men med mer utjevning vil bilde bli utydlig. Det samme bilde med gaussisk utejevning med standardavvik på 20 kan bli sett på figur \ref{fig:cassini-20}
 
 \begin{figure}[h]
   \centering
@@ -98,4 +105,23 @@ I figur \ref{fig:lhl} ser du lena filterert med et høypass filter med cut-off f
   \caption{Higpass(30) og Laplacian}
   \label{fig:lhl}
 \end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/cassini-blurred-30.png}
+  \caption{cassini utjevnet med gaussisk filter med sd på 30}
+  \label{fig:cassini}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/cassini-blurred-20.png}
+  \caption{cassini utjevnet med gaussisk filter me sd på 20}
+  \label{fig:cassini-20}
+\end{figure}
+
+
 \end{document}
+
