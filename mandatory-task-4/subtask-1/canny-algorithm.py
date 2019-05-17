@@ -120,8 +120,8 @@ for i in range(1, M - 1):
         else:
             n_m_sup[i, j] = 0
 
-T_h = 0.8
-t_l = 0.25
+T_h = 0.60
+t_l = 0.05
 
 io.imsave("before-treshold.png", util.img_as_uint(n_m_sup))
 
