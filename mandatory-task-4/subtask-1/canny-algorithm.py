@@ -63,7 +63,7 @@ def check_if_between_treshold(value):
 
 flt = gaussian_smooth()
 gaussian_image = nd.convolve(img, flt, mode="nearest")
-io.imsave("lena_gaussian.png", util.img_as_uint(gaussian_image))
+io.imsave("gaussian-moon.png", util.img_as_uint(gaussian_image))
 
 # Prewitt operators
 """
@@ -79,14 +79,13 @@ grad_y = nd.convolve(gaussian_image, prk_y, mode='nearest')
 
 grad_x_y = np.sqrt(grad_x**2 + grad_y**2)
 
-io.imsave('grad_x_y.png', util.img_as_uint(grad_x_y))
+io.imsave('grad-x-y-moon.png', util.img_as_uint(grad_x_y))
 
 # Non max supression
 n_m_sup = np.zeros(img.shape)
 grad_x_y = np.pad(grad_x_y, 0, mode='constant')
 N, M = grad_x_y.shape
 
-io.imsave("before-non_max_supression.png", util.img_as_uint(grad_x_y))
 
 """The basic structure of the non_max_supression is taken from:
 https://towardsdatascience.com/canny-edge-detection-step-by-step-in-python-computer-vision-b49c3a2d8123
@@ -120,8 +119,8 @@ for i in range(1, M - 1):
         else:
             n_m_sup[i, j] = 0
 
-T_h = 0.60
-t_l = 0.05
+T_h = 0.3
+t_l = 0.01
 
 io.imsave("before-treshold.png", util.img_as_uint(n_m_sup))
 
@@ -132,8 +131,6 @@ for i in range (1, M - 1):
         elif n_m_sup[i, j] <= t_l:
             n_m_sup[i, j] = 0.0
 
-io.imsave("middle-treshold.png", util.img_as_uint(n_m_sup))
-
 for i in range(1, M - 1):
     for j in range(1, N -1):
         if n_m_sup[i, j] != 1.0 or n_m_sup[i, j] != 0.0:
@@ -143,6 +140,6 @@ for i in range(1, M - 1):
                 n_m_sup[i, j] = 0.0
 
 
-io.imsave("treshold.png", util.img_as_uint(n_m_sup))   
+io.imsave("canny-moon.png", util.img_as_uint(n_m_sup))   
 
 

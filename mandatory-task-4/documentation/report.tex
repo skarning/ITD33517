@@ -9,6 +9,21 @@
 \begin{document}
 \maketitle
 
+\section{Oppgave 1}
+\subsection{Oppgavebeskrivelse}
+Implementer Canny algoritmen slik som gitt i boka/slides. Alle tre stegene av algoritmen skal implementeres på egen hånd, men det er lov å bruke innebygde operasjoner som konvolusjon. Det skal demonstreres at algoritmen fungerer som den skal ved å sammenligne resultatet med det den innebygde implementasjonen i scikit produserer på et lite utvalg av bilder.
+\subsection{Dokumentasjon}
+Canny edge detector er en algoritme for å detektere kanter i et bilde. Algoritmen består av tre deler.
+\begin{itemize}
+\item Gaussisk utjevning
+\item Non-Max supression
+\item Hysteresis tresholding
+\end{itemize}
+
+I denn oppgaven har jeg prøvd å implementere disse tre delene av algoritmen. For Non-Max supression delen har jeg brukt en guide som inspirasjon. Hvilken del dette er, er merket i koden. Denne guiden finner du her \footnote{https://towardsdatascience.com/canny-edge-detection-step-by-step-in-python-computer-vision-b49c3a2d8123}.
+\subsection{Resultat}
+Resultatet er blandet. Får fortsatt ikke samme resultat som jeg gjør med den innebygde implementasjon. Har prøvd forskjellige standardavvik på Gaussisk utjevning og fot øvre og nedre treshold. Resultatet av dette ser i figur \ref{fig:canny-moon-1}, \ref{fig:canny-moon-2} og \ref{fig:canny-moon-3}. Som du ser var kantene for tykke, og selve kanten på månen var aldri sammenhengende. Jeg antar at problemet ligger i implementasjonen av Non-Max supression som ikke klarer å kjenne igjen kantene riktig. Som man ser i figur \ref{fig:canny-moon-scikit}. Jeg prøvde med andre bilder også, men får fortsatt dårlig resultat. Et forsøk på å kantdetektere Lena kan bli observert i figur \ref{fig:canny-lena}
+
 \section{Oppgave 2}
 \subsection{Oppgavebeskrivelse}
 I denne oppgaven skal dere sammenligne ulike kantdeteksjonsalgoritmer. Det er her lov å ta i bruk innebygde implementasjoner. Dere må teste minst tre ulike algoritmer og dere skal teste med ulike verdier for konstanter slik som sigma og threshold. Resultatet skal vises frem og diskuteres.
@@ -49,6 +64,7 @@ Forskjellen mellom canny kantdetektoren og Sobel/Prwitt kantdetekteringen er sto
   \label{fig:sobprew}
 \end{figure}
 
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.5\textwidth, angle=270]{images/matrix}
@@ -56,4 +72,43 @@ Forskjellen mellom canny kantdetektoren og Sobel/Prwitt kantdetekteringen er sto
   \label{fig:mat}
 \end{figure}
 
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/moon-canny-5-005-06.png}
+  \caption{Canny kantdeteksjon, Gaussian(5), Th = 0.05 Tl = 0.6}
+  \label{fig:canny-moon-1}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/moon-canny-3-01-05.png}
+  \caption{Canny kantdeteksjon, Gaussian(3), Th = 0.1 Tl = 0.5}
+  \label{fig:canny-moon-2}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/moon-canny-3-001-03.png}
+  \caption{Canny kantdeteksjon, Gaussian(3), Th = 0.01 Tl = 0.3}
+  \label{fig:canny-moon-3}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/scikit-canny-moon.png}
+  \caption{Scikit sin innebygde canny kantdetektor}
+  \label{fig:canny-moon-scikit}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/canny-lena}
+  \caption{Lena med canny kantdetektor}
+  \label{fig:canny-lena}
+\end{figure}
 \end{document}
