@@ -42,7 +42,7 @@ Tesseract er et open-source programvare som utfører tekstegjenkjenning. Den kan
 For at bilde skal kunne bli analysert på riktig måte, er vi nødt til skalere, kroppe og rotere bilde. Rotering av bilde kan bli gjort med et konsept som kalles homography. Her kan man bruke referansepunkter på et annet bilde til å rette det. Skalering og kropping er det mulig å programmere selv, eller bruke innebygde funksjoner i scikit-image. \footnote{https://www.learnopencv.com/image-alignment-feature-based-using-opencv-c-python/}
 \paragraph{Oppskarpning}
 Det kan være utfordrende for tekstgjenkjennings-algoritmer å kjenne igjen tekst. De fleste programmer som kjører tekstgjenkjenning kjører egne filtre for å optimaliser det for tekstgjenkjenning. For å få mer kontroll og øke sjansen for å at gjenkjenningen blir nøyaktig vil jeg bruke min egen optimerer. Den skal kunne gjøre bilde monokromt, fjerne støy, gjøre bilde skarpere og forbedre kontrasten.\footnote{https://docparser.com/blog/improve-ocr-}
-\begin{figure}[h]
+\begin{figure}[h!]
 \centering
 \includegraphics[scale=0.2]{images/test_image_threated.jpg}
 \caption{Behandlet versjon av figur \ref{fig:kvittering}}
@@ -79,10 +79,40 @@ Et problem med å gjennomføre tekstgjenkjenning på et bilde uten å ha behandl
 \label{fig:skewed10}
 \end{figure}
 
-\paragraph{Hough}
-Hough transformasjonen er brukt for å detektere former. Algoritmen har potensiale til å detektere forskjellige typer former, men i denne sammenhengen er den kun nyttig for å detektere linjer \footnote{https://en.wikipedia.org/wiki/Hough_transform#Implementation}. 
-\paragraph{Linjeanalyse}
-\paragraph{Homography}
+\subsection{Hough}
+\paragraph{Teori}
+Hough transformasjonen er brukt for å detektere former. Algoritmen har potensiale til å detektere forskjellige typer former, men i denne sammenhengen er den kun nyttig for å detektere linjer \footnote{https://en.wikipedia.org/wiki/Hough\_transform}. Hough transformasjonen baserer seg på at en linje kan bli representert matematisk som $$y = m * x + b$$ eller $$r = x * cos(theta) + y * sin(theta)$$ Problemet med den første formen er at hvis vinkelen blir 90 grader i forhold til den horiontale linjen over bilde vil verdien m, eller stigningen m bli evig stor. Man vil derfor bruke en parameterisert form i polar-koordinater. Variablen r er lengden fra origo til et punkt P på linjen, theta er vinkelen mellom linjen OP og 'initial ray' eller X-aksen på bildet i dette tilfellet.
+
+Med denne parameteriseringen kan vi finne alle linjer som opfyller likningen per punkt på forgrunden av bildet. Da kan vi plotte alle verdiene for r og theta som en graf. Gjør man dette for alle forgrundspikslene i bildet, får vi en graf som viser når linjer krysser hverandre.
+
+Man kan også beregne akkumulator-celler. Her genererer man en matrise hvor kolonenne bestemmer theta og radenen bestemmer r. For hver forgrundspiksel vi har gått igjennom å beregnet hvilke verdier for theta og r som opfyller likingen legger vi til verdien en i legger vi til 1 i akkumulatoren i punkt (r, theta). Hver gang vi legger til 1 betyr dette at vi har funnet en ny piksel som skal bli lagt til på linjen. Dette betyr at vi sitter igjen med hvor mange piksler som ligger på en linje definert av r og theta i denne grafen. Dette kan være nyttig for å finne tydlige linjer i bildet.
+
+\paragraph{Implementasjon}
+I et bilde av tekst eller i mitt eksempel et bilde av en kvittering, kan man detektere linjene som blir dannet av teksten.
+
+Jeg valgte å bruke innebygde funksjoner for hough transformasjon i dette prosjektet. Scikit har funksjoner som $hough\_transform$ og $hough\_transform\_peak$ som jeg brukte for selve hough transformasjonen.
+
+Prinsippet er at de mest tydlige linjene fra Hough transformasjonen vil bli valgt ut for seleksjon. I seleksjonen finner jeg hvilke linjer med omtrent samme vinkel som forekommer flest ganger. Håpet er at disse linjene er linjene generert av teksten på kviteringene. Vinkelen til linjene som forekommer flest ganger bestemmer derfor rotasjonen på bildet. Et eksempel på dette kan bli sett i figur \ref{fig:hough-45}. Her har algoritmen funnet flere forekomster av sterke linjer, hvilken vinkel med x-aksen som forekommer flest ganger og deretter rotert bilde med denne vinkelen. I figur \ref{fig:hough-result} ser man listen counter som holder på hvilke vinkler i radianer som forekommer flest ganger. Et problem med denne algoritmen er at den er avhengig av klare linjer. Jeg har kjørt algoritmen på en del bilder og det hender at bildet blir rotert feil vei. Algoritmen tar heller ikke høyde for at bilde kan være opp ned eller rotert over 90 grader.
+
+En løsning på dette ville være å prøve å rotere begge veier for så å sammenlikne tesseract resultatet med en ordbok automatisk for å sjekke hvilken rotasjon som var riktig.
+
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.05]{images/hough-rot-45}
+\caption{Rotering gjort med Hough transform}
+\label{fig:hough-45}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{images/hough-result}
+\caption{Utdrag fra deskewing.py}
+\label{fig:hough-result}
+\end{figure}
+
 
 
 \end{document}

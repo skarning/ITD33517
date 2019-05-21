@@ -7,6 +7,7 @@ from collections import Counter
 from skimage.transform import rotate
 
 img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[1])))
+buff_img = util.img_as_float(color.rgb2gray(io.imread(sys.argv[1])))
 
 n = img.shape[0]
 m = img.shape[1]
@@ -47,9 +48,9 @@ h_p, theta_p, d_p = hough_line_peaks(h, theta, d)
 
 print('--------------------------------')
 
-
 for i in range(0, len(theta_p) - 1):
-    print(theta_p[i])
+   # print(theta_p[i])
+    print(h_p[i])
 
 for i in range(0, len(theta_p) - 1):
     theta_p[i] = np.round(theta_p[i], 2)
@@ -60,9 +61,9 @@ print(occ)
 
 angle = float(max(occ, key=occ.get))
 
-rotated_img = rotate(grad_x_y, float((angle *  180) / np.pi ))
+rotated_img = rotate(buff_img, float((angle *  180) / np.pi ))
 
 print('Angle: {}'.format(float((angle *  180) / np.pi )))
 print(angle)
 
-io.imsave('rotated_2.png', util.img_as_uint(np.clip(rotated_img, -1, 1)))
+io.imsave('rot-table.png', util.img_as_uint(np.clip(rotated_img, -1, 1)))
