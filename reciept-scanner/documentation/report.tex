@@ -53,7 +53,7 @@ Det kan være utfordrende for tekstgjenkjennings-algoritmer å kjenne igjen teks
 
 \section{Gjennomføring}
 \subsection{Deskewing}
-Et problem med å gjennomføre tekstgjenkjenning på et bilde uten å ha behandlet det først er at man ikke har noen garanti på at bilde har riktig vinkel. Hvis teksten ikke går parallelt med bilde vil resultatet kunne bli dårligere. Som observert i figur \ref{fig:skewed45} og figur \ref{fig:skewed10} har vi et bilde som er riktig orjentert og et bilde som er feil orientert. På bildet som er feil orientert klarer ikke tesseract å gjenkjenne teksten. På bildet som er rikitg orientert får vi følgende resultat som sett i figur \ref{fig:skewed10result}. Dette resultatet er bedre, men fortsatt langt fra treffsikkert.
+Et problem med å gjennomføre tekstgjenkjenning på et bilde uten å ha behandlet det først er at man ikke har noen garanti på at bilde har riktig vinkel. Hvis teksten ikke går parallelt med bilde vil resultatet kunne bli dårligere. Som observert i figur \ref{fig:skewed45} er bildet feil orientert. På dette bildet klarer ikke tesseract å gjenkjenne teksten. På bildet som er rikitg orientert får vi følgende resultat som sett i figur \ref{fig:skewed10result}. Dette resultatet er bedre, men fortsatt langt fra treffsikkert.
 
 
 \begin{figure}[h]
@@ -69,14 +69,6 @@ Et problem med å gjennomføre tekstgjenkjenning på et bilde uten å ha behandl
 \includegraphics[scale=0.05, angle=270]{images/skewed45}
 \caption{Bilde med feil rotering}
 \label{fig:skewed45}
-\end{figure}
-
-
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.05, angle=270]{images/skewed10}
-\caption{Bilde med riktig rotering}
-\label{fig:skewed10}
 \end{figure}
 
 \subsection{Hough}
@@ -115,6 +107,35 @@ En løsning på dette ville være å prøve å rotere begge veier for så å sam
 
 
 \subsection{Otsu tresholding}
+\paragraph{Teori}
+Otsus metode er en algorimte for tresholding av et bilde. Den baserer seg på intra-class variance. Varians i statistikkens verden er gjennomsnittelig avstand fra gjennomsnittet.
+For å finne denne kvadrererman alle verdien som avviker fra gjennomsnittet og legger de sammen. Man deler så pa antall avvik. Intra-class varians er variansen innenfor en klasse.
 
+I Otsus metode finner man histogrammet av input bilde. Optimalt sett vil man se to klasser eller topper innenfor dette histogrammet. Man prøver så å finne en treshold grense k som gjør at intra-class variansen blir så liten som mulig.
+
+Problemet med denne algoritmen er at den er vedldig avhengig av at det histogrammet generert av bilde har to topper. Hvis bilde har mye støy kan dette jevne ut histogrammet og resultatet kan blir dårlig.
+
+\paragraph{Implementasjon}
+For å kode denne algoritmen fulgte jeg stegene i kapittel 10.3 i boken Digital Image Processing.
+\begin{itemize}
+\item Finn histogrammet for input bildet.
+\item Regn ut de kumulative distrubisjons funksjonene for begge klassene
+\item Finn den kumulative gjennomsnitts funksjonen for den ene klassen
+\item Finn den kumulative gjennomsnitts funksjonen for hele histogrammet
+\item Finn avstanden mellom klassene (Between class variance)
+\item Finn segmenteringen k som gir den lengste avstanden mellom klassene ved å gå gjennom alle k
+\end{itemize}
+
+Dette vil gi den beste segmenteringen avhengig av at histogrammet inneholder to klasser.
+
+\paragraph{Resultat}
+Algorimten fungerte bra på bilder som ikke inneholdt skygger, eller som var rotert for mye. Skyggene førte til en jevnere overgang av de to klassene i histogrammet. Da jeg fjernet skyggene i bilde og de svarte kantene som er et resultat av rotasjonen av bilde, fungerte algoritmen veldig bra. Jeg fjernet også støy med et gaussisk filter for å få et enda bedre resultat. I figur \ref{fig:otsu-results} ser man input bilde til venstre, det samme bilde segmentert med otsus metode til høyre. Nederst har jeg fjernet kantenen på roteringen og skyggen på nederst på bilde. Segmenteringen blir dermed bedre. På bilde til høyre valgte otsus metode en treshold på 117, på det nederste bilde ble det valgt en treshold på 152.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{images/otsu-results}
+\caption{Otsu segmentering}
+\label{fig:otsu-results}
+\end{figure}
 
 \end{document}
